@@ -21,6 +21,45 @@ exports.addCall = async (req, res) => {
 	}
 };
 
+exports.updateCall = async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		if (!id) {
+			return res
+				.status(400)
+				.json({ success: false, message: "Call ID is required" });
+		}
+
+		const value = req.body;
+
+		const call = await Calls.findByPk(id);
+
+		if (!call) {
+			return res
+				.status(404)
+				.json({ success: false, message: "Call not found" });
+		}
+
+		// Update the call
+		await call.update({
+			...value,
+			updated_at: new Date(),
+		});
+
+		return res.status(200).json({
+			success: true,
+			message: "Call updated successfully",
+			data: call,
+		});
+	} catch (err) {
+		console.error("Update Call Error:", err);
+		return res
+			.status(500)
+			.json({ success: false, message: "Internal Server Error" });
+	}
+};
+
 exports.getAllCallListing = async (req, res) => {
 	try {
 		let page = parseInt(req.query.page) || 1;

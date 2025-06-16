@@ -3,6 +3,7 @@ const {
 	getAllCallListing,
 	getCallById,
 	addCall,
+	updateCall,
 } = require("../controllers/calls");
 const { validateBody } = require("../utils/validateChecker");
 const { schema } = require("../utils/validationSchema");
@@ -15,6 +16,12 @@ router.get("/", function (req, res, next) {
 });
 
 router.post("/addCall", validateBody(schema.createCallSchema), addCall);
+
+router.put(
+	"/updateCall/:id",
+	validateBody(schema.updateCallSchema),
+	updateCall
+);
 
 router.get("/getAllCallListing", getAllCallListing);
 
