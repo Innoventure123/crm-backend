@@ -1,5 +1,26 @@
 const Calls = require("../models/calls");
 
+exports.addCall = async (req, res) => {
+	try {
+		const data = req.body;
+
+		const newCall = await Calls.create({
+			...data,
+			created_at: new Date(),
+			updated_at: new Date(),
+		});
+
+		return res
+			.status(201)
+			.json({ success: true, message: "Call created", data: newCall });
+	} catch (err) {
+		console.error("Add Call Error:", err);
+		return res
+			.status(500)
+			.json({ success: false, message: "Internal Server Error" });
+	}
+};
+
 exports.getAllCallListing = async (req, res) => {
 	try {
 		let page = parseInt(req.query.page) || 1;

@@ -23,7 +23,8 @@ const Call = sequelize.define(
 		// },
 		column_priority: {
 			type: DataTypes.INTEGER,
-			allowNull: false,
+			allowNull: true,
+			defaultValue: 0,
 		},
 		agent_id: {
 			type: DataTypes.BIGINT.UNSIGNED,
@@ -135,7 +136,8 @@ const Call = sequelize.define(
 		},
 		converted_by: {
 			type: DataTypes.STRING(10),
-			allowNull: false,
+			allowNull: true,
+			defaultValue: "",
 		},
 		company_id: {
 			type: DataTypes.INTEGER,

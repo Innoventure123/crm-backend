@@ -1,11 +1,21 @@
 var express = require("express");
-const { getAllCallListing, getCallById } = require("../controllers/calls");
+const {
+	getAllCallListing,
+	getCallById,
+	addCall,
+} = require("../controllers/calls");
+const { validateBody } = require("../utils/validateChecker");
+const { schema } = require("../utils/validationSchema");
+
 var router = express.Router();
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
 	res.send("respond with a resource");
 });
+
+router.post("/addCall", validateBody(schema.createCallSchema), addCall);
+
 router.get("/getAllCallListing", getAllCallListing);
 
 router.get("/getCallById/:id", getCallById);
