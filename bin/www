@@ -8,7 +8,7 @@ var app = require("../app");
 var debug = require("debug")("innoventure-finance-backend:server");
 var http = require("http");
 var https = require("https");
-
+var fs = require("fs");
 /**
  * Get port from environment and store in Express.
  */
@@ -24,9 +24,9 @@ var server = http.createServer(app);
 
 if (process.env.NODE_ENV === "production") {
 	// If in production, create an HTTPS server instead
-	var options = {
-		key: process.env.SSL_KEY,
-		cert: process.env.SSL_CERT,
+	const options = {
+		key: fs.readFileSync("/etc/ssl/private/selfsigned.key"),
+		cert: fs.readFileSync("/etc/ssl/certs/selfsigned.crt"),
 	};
 	server = https.createServer(options, app);
 }
