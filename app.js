@@ -11,7 +11,7 @@ var projectRouter = require("./routes/projects");
 var productRouter = require("./routes/products");
 var countryRouter = require("./routes/country");
 var callsRouter = require("./routes/calls");
-
+require("./utils/helperFunctions");
 require("./utils/db");
 require("./models/index");
 var app = express();
