@@ -156,6 +156,7 @@ const User = sequelize.define(
 		role: {
 			type: DataTypes.ENUM("owner", "team_lead", "unit_head", "agent"),
 			allowNull: false,
+			defaultValue: "agent",
 		},
 		manager_id: {
 			type: DataTypes.INTEGER.UNSIGNED,
@@ -189,8 +190,4 @@ User.associate = function (models) {
 
 module.exports = User;
 
-// ALTER TABLE test.users
-// ADD COLUMN role ENUM('owner', 'team_lead', 'agent','unit_head') NOT NULL DEFAULT 'agent',
-// ADD COLUMN manager_id INT UNSIGNED DEFAULT NULL,
-// ADD CONSTRAINT fk_manager
-//   FOREIGN KEY (manager_id) REFERENCES users(id) ON DELETE SET NULL;
+// ALTER TABLE test.users ADD COLUMN role ENUM('owner', 'team_lead', 'agent','unit_head') NOT NULL DEFAULT 'agent', ADD COLUMN manager_id INT UNSIGNED DEFAULT NULL, ADD CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES users(id) ON DELETE SET NULL;
