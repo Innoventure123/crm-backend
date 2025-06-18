@@ -27,24 +27,24 @@ exports.login = async (req, res) => {
 		// Check user exists
 		const user = await Users.findOne({
 			where: { email },
-			include: [
-				{
-					model: UserPermission,
-					attributes: ["id", "permission_id"],
-					include: [
-						{
-							model: Permission,
-							attributes: [
-								"id",
-								"name",
-								"display_name",
-								"allowed_permissions",
-								"added_type",
-							],
-						},
-					],
-				},
-			],
+			// include: [
+			// 	{
+			// 		model: UserPermission,
+			// 		attributes: ["id", "permission_id"],
+			// 		include: [
+			// 			{
+			// 				model: Permission,
+			// 				attributes: [
+			// 					"id",
+			// 					"name",
+			// 					"display_name",
+			// 					"allowed_permissions",
+			// 					"added_type",
+			// 				],
+			// 			},
+			// 		],
+			// 	},
+			// ],
 			attributes: [
 				"id",
 				"password",
@@ -65,6 +65,7 @@ exports.login = async (req, res) => {
 
 		// Match password
 		const isMatch = await bcrypt.compare(password, user.password);
+
 		if (!isMatch)
 			return res
 				.status(401)
@@ -92,6 +93,57 @@ exports.login = async (req, res) => {
 		return res.status(500).json({
 			success: false,
 			message: "Something went wrong",
+			error: error.message,
+		});
+	}
+};
+
+exports.getAllAgentsListing = async (req, res) => {
+	try {
+		let page = parseInt(req.query.page) || 1;
+		let limit = parseInt(req.query.limit) || 10;
+		let offset = (page - 1) * limit;
+
+		const user_id = req.user.id;
+
+		const findMyProfile = await Users.findByPk(user_id);
+
+		if (!findMyProfile) {
+			return res
+				.status(400)
+				.json({ success: false, message: "User not foudn" });
+		}
+
+		const params = {};
+
+		if (findMyProfile.role == "team_lead") {
+			params.manager_id = user_id;
+		} else if (findMyProfile.role == "agent") {
+			params.id = user_id;
+		}
+
+		const { count, rows } = await Users.findAndCountAll({
+			where: params,
+			limit,
+			offset,
+			order: [["created_at", "DESC"]],
+		});
+
+		return res.status(200).json({
+			success: true,
+			message: "Agents fetched",
+			data: rows,
+			meta: {
+				totalItems: count,
+				currentPage: page,
+				totalPages: Math.ceil(count / limit),
+			},
+		});
+	} catch (error) {
+		console.error("Error fetching agents:", error);
+		return res.status(500).json({
+			success: false,
+			message: "Internal Server Error",
 			error: error.message,
 		});
 	}

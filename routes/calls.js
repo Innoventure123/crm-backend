@@ -7,6 +7,7 @@ const {
 } = require("../controllers/calls");
 const { validateBody } = require("../utils/validateChecker");
 const { schema } = require("../utils/validationSchema");
+const verifyToken = require("../middleware/verifyToken");
 
 var router = express.Router();
 
@@ -15,16 +16,22 @@ router.get("/", function (req, res, next) {
 	res.send("respond with a resource");
 });
 
-router.post("/addCall", validateBody(schema.createCallSchema), addCall);
+router.post(
+	"/addCall",
+	verifyToken,
+	validateBody(schema.createCallSchema),
+	addCall
+);
 
 router.put(
 	"/updateCall/:id",
+	verifyToken,
 	validateBody(schema.updateCallSchema),
 	updateCall
 );
 
-router.get("/getAllCallListing", getAllCallListing);
+router.get("/getAllCallListing", verifyToken, getAllCallListing);
 
-router.get("/getCallById/:id", getCallById);
+router.get("/getCallById/:id", verifyToken, getCallById);
 
 module.exports = router;
