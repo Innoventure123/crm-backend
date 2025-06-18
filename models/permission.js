@@ -43,21 +43,23 @@ const Permission = sequelize.define(
 		},
 		created_at: {
 			type: DataTypes.DATE,
+			allowNull: false,
 		},
 		updated_at: {
 			type: DataTypes.DATE,
+			allowNull: false,
 		},
 	},
 	{
 		tableName: "permissions",
 		underscored: true,
 		timestamps: true,
-		indexes: [
-			{
-				unique: true,
-				fields: ["name", "module_id"],
-			},
-		],
+		// indexes: [
+		// 	{
+		// 		unique: true,
+		// 		fields: ["name", "module_id"],
+		// 	},
+		// ],
 	}
 );
 
