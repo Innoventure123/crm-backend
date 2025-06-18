@@ -21,10 +21,10 @@ const Permission = sequelize.define(
 			type: DataTypes.STRING(191),
 			allowNull: true,
 		},
-		module_id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: false,
-		},
+		// module_id: {
+		// 	type: DataTypes.INTEGER.UNSIGNED,
+		// 	allowNull: false,
+		// },
 		is_custom: {
 			type: DataTypes.TINYINT,
 			allowNull: false,
