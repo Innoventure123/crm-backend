@@ -53,6 +53,8 @@ exports.login = async (req, res) => {
 				"name",
 				"gender",
 				"status",
+				"role",
+				"manager_id",
 			],
 		});
 
