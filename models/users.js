@@ -74,7 +74,7 @@ const User = sequelize.define(
 		},
 		last_login: {
 			type: DataTypes.DATE,
-			defaultValue: new Date.now(),
+			defaultValue: new Date(),
 		},
 		email_notifications: {
 			type: DataTypes.TINYINT,
