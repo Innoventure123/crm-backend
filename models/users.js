@@ -10,10 +10,10 @@ const User = sequelize.define(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		company_id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: true,
-		},
+		// company_id: {
+		// 	type: DataTypes.INTEGER.UNSIGNED,
+		// 	allowNull: true,
+		// },
 		name: {
 			type: DataTypes.STRING(191),
 			allowNull: false,
@@ -74,6 +74,7 @@ const User = sequelize.define(
 		},
 		last_login: {
 			type: DataTypes.DATE,
+			defaultValue: new Date.now(),
 		},
 		email_notifications: {
 			type: DataTypes.TINYINT,
