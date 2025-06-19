@@ -1,4 +1,6 @@
+const { Op } = require("sequelize");
 const Calls = require("../models/calls");
+const Users = require("../models/users");
 
 exports.addCall = async (req, res) => {
 	try {
@@ -66,7 +68,30 @@ exports.getAllCallListing = async (req, res) => {
 		let limit = parseInt(req.query.limit) || 10;
 		let offset = (page - 1) * limit;
 
+		const user_id = req.user.id;
+
+		const findMyProfile = await Users.findByPk(user_id);
+
+		if (!findMyProfile) {
+			return res
+				.status(400)
+				.json({ success: false, message: "User not found" });
+		}
+
+		const params = {};
+
+		if (findMyProfile.role == "team_lead") {
+			const findMyAgents = await Users.findAll({
+				where: { manager_id: user_id },
+			});
+			const agentIds = findMyAgents.map((agent) => agent.id);
+			params.agent_id = { [Op.in]: agentIds };
+		} else if (findMyProfile.role == "agent") {
+			params.agent_id = user_id;
+		}
+
 		const { count, rows } = await Calls.findAndCountAll({
+			where: params,
 			limit,
 			offset,
 			order: [["created_at", "DESC"]],

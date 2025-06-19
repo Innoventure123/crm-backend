@@ -111,7 +111,7 @@ exports.getAllAgentsListing = async (req, res) => {
 		if (!findMyProfile) {
 			return res
 				.status(400)
-				.json({ success: false, message: "User not foudn" });
+				.json({ success: false, message: "User not found" });
 		}
 
 		const params = {};
