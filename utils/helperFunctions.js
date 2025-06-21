@@ -20,7 +20,14 @@ const bulkUpdateUsersWithManager = async (data) => {
 				continue;
 			}
 
-			manager.role = "team_lead";
+			if (manager.name == "Braj") {
+				manager.role = "owner";
+				manager.role_id = 1;
+			} else {
+				manager.role = "team_lead";
+				manager.role_id = 4;
+			}
+
 			await manager.save();
 			console.log(`✅ Updated team lead: ${manager.name} to role=team_lead`);
 			// Loop through each user under the team lead
@@ -38,6 +45,7 @@ const bulkUpdateUsersWithManager = async (data) => {
 				}
 
 				user.role = new_role;
+				user.role_id = 5;
 				user.manager_id = manager.id;
 
 				await user.save();
