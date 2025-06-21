@@ -188,3 +188,31 @@ exports.updateStatus = async (req, res) => {
 		});
 	}
 };
+
+exports.deleteCall = async (req, res) => {
+	try {
+		const { id } = req.params;
+
+		const call = await Calls.findByPk(id);
+
+		if (!call) {
+			return res.status(404).json({
+				success: false,
+				message: "Call not found.",
+			});
+		}
+
+		await call.destroy();
+
+		return res.status(200).json({
+			success: true,
+			message: "Call deleted successfully.",
+		});
+	} catch (error) {
+		console.error("Error deleting call:", error);
+		return res.status(500).json({
+			success: false,
+			message: "Server error.",
+		});
+	}
+};

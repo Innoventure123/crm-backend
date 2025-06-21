@@ -158,7 +158,6 @@ const Call = sequelize.define(
 		},
 		status: {
 			type: DataTypes.ENUM(
-				"Pending",
 				"Interested",
 				"Follow-up",
 				"Call Back",
@@ -166,8 +165,8 @@ const Call = sequelize.define(
 				"Not Reachable",
 				"Not Interested"
 			),
-			allowNull: false,
-			defaultValue: "Pending", // or any other default you prefer
+			allowNull: true,
+			defaultValue: null,
 		},
 	},
 	{

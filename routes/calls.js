@@ -5,6 +5,7 @@ const {
 	addCall,
 	updateCall,
 	updateStatus,
+	deleteCall,
 } = require("../controllers/calls");
 const { validateBody } = require("../utils/validateChecker");
 const { schema } = require("../utils/validationSchema");
@@ -36,5 +37,7 @@ router.get("/getAllCallListing", verifyToken, getAllCallListing);
 router.get("/getCallById/:id", verifyToken, getCallById);
 
 router.put("/updateStatus/:id", verifyToken, updateStatus);
+
+router.delete("/deleteCall/:id", verifyToken, deleteCall);
 
 module.exports = router;
