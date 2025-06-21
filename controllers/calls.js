@@ -140,3 +140,51 @@ exports.getCallById = async (req, res) => {
 		});
 	}
 };
+
+exports.updateStatus = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { status } = req.body;
+
+		// Validate status value
+		const allowedStatuses = [
+			"Interested",
+			"Follow-up",
+			"Call Back",
+			"Switched Off",
+			"Not Reachable",
+			"Not Interested",
+		];
+
+		if (!allowedStatuses.includes(status)) {
+			return res.status(400).json({
+				success: false,
+				message: "Invalid status value.",
+			});
+		}
+
+		// Find and update the record
+		const call = await Calls.findByPk(id);
+		if (!call) {
+			return res.status(404).json({
+				success: false,
+				message: "Call not found.",
+			});
+		}
+
+		call.status = status;
+		await call.save();
+
+		return res.status(200).json({
+			success: true,
+			message: "Status updated successfully.",
+			data: call,
+		});
+	} catch (error) {
+		console.error("Error updating status:", error);
+		return res.status(500).json({
+			success: false,
+			message: "Server error.",
+		});
+	}
+};

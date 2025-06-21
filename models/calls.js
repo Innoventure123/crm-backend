@@ -156,6 +156,19 @@ const Call = sequelize.define(
 			type: DataTypes.INTEGER,
 			allowNull: false,
 		},
+		status: {
+			type: DataTypes.ENUM(
+				"Pending",
+				"Interested",
+				"Follow-up",
+				"Call Back",
+				"Switched Off",
+				"Not Reachable",
+				"Not Interested"
+			),
+			allowNull: false,
+			defaultValue: "Pending", // or any other default you prefer
+		},
 	},
 	{
 		tableName: "call",

@@ -4,6 +4,7 @@ const {
 	getCallById,
 	addCall,
 	updateCall,
+	updateStatus,
 } = require("../controllers/calls");
 const { validateBody } = require("../utils/validateChecker");
 const { schema } = require("../utils/validationSchema");
@@ -33,5 +34,7 @@ router.put(
 router.get("/getAllCallListing", verifyToken, getAllCallListing);
 
 router.get("/getCallById/:id", verifyToken, getCallById);
+
+router.put("/updateStatus/:id", verifyToken, updateStatus);
 
 module.exports = router;

@@ -12,7 +12,7 @@ const sequelize = new Sequelize(
 
 // Sync the database
 // sequelize
-// 	.sync({ force: false }) // Use force: false to avoid dropping tables in production
+// 	.sync({ alter: true }) // Use force: false to avoid dropping tables in production
 // 	.then(() => {
 // 		console.log("Database synced successfully");
 // 	})
