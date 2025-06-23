@@ -160,7 +160,8 @@ const User = sequelize.define(
 				"unit_head",
 				"sales_coordinator",
 				"team_lead",
-				"agent"
+				"agent",
+				"process_head"
 			),
 			allowNull: false,
 			defaultValue: "agent",
