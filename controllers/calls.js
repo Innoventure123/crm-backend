@@ -88,6 +88,8 @@ exports.getAllCallListing = async (req, res) => {
 			params.agent_id = { [Op.in]: agentIds };
 		} else if (findMyProfile.role == "agent") {
 			params.agent_id = user_id;
+		} else if (findMyProfile.role == "sales_coordinator") {
+			params.status = "Interested";
 		}
 
 		const { count, rows } = await Calls.findAndCountAll({
