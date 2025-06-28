@@ -1,6 +1,8 @@
 const { Op } = require("sequelize");
 const Calls = require("../models/calls");
 const Users = require("../models/users");
+const Project = require("../models/projects");
+const Product = require("../models/products");
 
 exports.addCall = async (req, res) => {
 	try {
@@ -97,6 +99,41 @@ exports.getAllCallListing = async (req, res) => {
 			limit,
 			offset,
 			order: [["created_at", "DESC"]],
+			include: [
+				{
+					model: Users,
+					// attributes: ["id", "name", "email"],
+					as: "agent",
+				},
+				{
+					model: Users,
+					// attributes: ["id", "name", "email"],
+					as: "creator",
+				},
+				{
+					model: Users,
+					// attributes: ["id", "name", "email"],
+					as: "editor",
+				},
+				{
+					model: Project,
+					as: "project_details",
+				},
+				{
+					model: Product,
+					as: "product_details",
+				},
+				{
+					model: Users,
+					// attributes: ["id", "name", "email"],
+					as: "converter",
+				},
+				{
+					model: Users,
+					// attributes: ["id", "name", "email"],
+					as: "assigner",
+				},
+			],
 		});
 
 		return res.status(200).json({
@@ -123,7 +160,44 @@ exports.getCallById = async (req, res) => {
 	const CallId = req.params.id;
 
 	try {
-		const Country = await Calls.findByPk(CallId);
+		const Country = await Calls.findByPk(CallId, {
+			include: [
+				{
+					model: Users,
+					// attributes: ["id", "name", "email"],
+					as: "agent",
+				},
+				{
+					model: Users,
+					// attributes: ["id", "name", "email"],
+					as: "creator",
+				},
+				{
+					model: Users,
+					// attributes: ["id", "name", "email"],
+					as: "editor",
+				},
+				{
+					model: Project,
+					as: "project_details",
+				},
+				{
+					model: Product,
+					as: "product_details",
+				},
+				{
+					model: Users,
+					// attributes: ["id", "name", "email"],
+					as: "converter",
+				},
+				{
+					model: Users,
+					// attributes: ["id", "name", "email"],
+					as: "assigner",
+				},
+			],
+		});
+
 		if (!Country) {
 			return res.status(404).json({
 				success: false,

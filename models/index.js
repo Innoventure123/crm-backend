@@ -1,7 +1,7 @@
 const models = {
 	User: require("./users"),
 	UserPermission: require("./user_permission"),
-	// Company: require("./company"),
+	Call: require("./calls"),
 	// Country: require("./country"),
 	Permission: require("./permission"),
 	PermissionType: require("./permission_type"),
