@@ -52,10 +52,10 @@ exports.updateCall = async (req, res) => {
 		}
 
 		// Update the call
-		await call.update({
-			...value,
-			updated_at: new Date(),
-		});
+		await Calls.update(
+			{ ...value, updated_at: new Date() },
+			{ where: { id: id } }
+		);
 
 		return res.status(200).json({
 			success: true,
