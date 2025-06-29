@@ -204,3 +204,10 @@ User.associate = function (models) {
 module.exports = User;
 
 // ALTER TABLE test.`users` ADD COLUMN `role_id` TINYINT UNSIGNED NOT NULL DEFAULT 5, ADD COLUMN `role` ENUM('owner', 'unit_head', 'sales_coordinator', 'team_lead', 'agent') NOT NULL DEFAULT 'agent'	0 row(s) affected Records: 0  Duplicates: 0  Warnings: 0	0.366 sec
+
+// const int owner = 1;
+// const int unit_head = 2;
+// const int sales_coordinator = 3;
+// const int team_lead = 4;
+// const int agent = 5;
+// const int process_head = 6;

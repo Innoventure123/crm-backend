@@ -38,6 +38,6 @@ router.get("/getCallById/:id", verifyToken, getCallById);
 
 router.put("/updateStatus/:id", verifyToken, updateStatus);
 
-router.delete("/deleteCall/:id", verifyToken, deleteCall);
+router.post("/deleteCall/:id", verifyToken, deleteCall);
 
 module.exports = router;
