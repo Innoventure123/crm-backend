@@ -162,7 +162,10 @@ const Call = sequelize.define(
 				"Call Back",
 				"Switched Off",
 				"Not Reachable",
-				"Not Interested"
+				"Not Interested",
+				"Approved",
+				"Under Process",
+				"Rejected"
 			),
 			allowNull: true,
 			defaultValue: null,

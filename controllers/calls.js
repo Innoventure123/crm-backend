@@ -230,6 +230,9 @@ exports.updateStatus = async (req, res) => {
 			"Switched Off",
 			"Not Reachable",
 			"Not Interested",
+			"Approved",
+			"Under Process",
+			"Rejected",
 		];
 
 		if (!allowedStatuses.includes(status)) {
