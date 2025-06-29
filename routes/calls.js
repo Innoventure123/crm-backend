@@ -21,14 +21,14 @@ router.get("/", function (req, res, next) {
 router.post(
 	"/addCall",
 	verifyToken,
-	validateBody(schema.createCallSchema),
+	// validateBody(schema.createCallSchema),
 	addCall
 );
 
 router.put(
 	"/updateCall/:id",
 	verifyToken,
-	validateBody(schema.updateCallSchema),
+	// validateBody(schema.updateCallSchema),
 	updateCall
 );
 
