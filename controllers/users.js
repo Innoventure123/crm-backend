@@ -69,7 +69,7 @@ exports.login = async (req, res) => {
 
 		if (!isMatch)
 			return res
-				.status(401)
+				.status(400)
 				.json({ success: false, message: "Invalid password" });
 
 		// Generate JWT
