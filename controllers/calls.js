@@ -104,7 +104,7 @@ exports.getAllCallListing = async (req, res) => {
 			where: params,
 			limit,
 			offset,
-			order: [["created_at", "DESC"]],
+			order: [["id", "DESC"]],
 			include: [
 				{
 					model: Users,
