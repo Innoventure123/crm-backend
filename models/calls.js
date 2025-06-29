@@ -62,6 +62,7 @@ const Call = sequelize.define(
 		cell: {
 			type: DataTypes.STRING(191),
 			allowNull: true,
+			defaultValue: "",
 		},
 		// office: {
 		// 	type: DataTypes.STRING(191),
@@ -86,6 +87,7 @@ const Call = sequelize.define(
 		note: {
 			type: DataTypes.TEXT,
 			allowNull: true,
+			defaultValue: "",
 		},
 		next_follow_up: {
 			type: DataTypes.ENUM("yes", "no"),
@@ -120,10 +122,12 @@ const Call = sequelize.define(
 		last_updated_by: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,
+			defaultValue: null,
 		},
 		hash: {
 			type: DataTypes.TEXT,
 			allowNull: true,
+			defaultValue: null,
 		},
 		product_id: {
 			type: DataTypes.INTEGER,
@@ -137,6 +141,7 @@ const Call = sequelize.define(
 		converted_by: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,
+			defaultValue: null,
 		},
 		company_id: {
 			type: DataTypes.INTEGER,
@@ -150,6 +155,7 @@ const Call = sequelize.define(
 		last_assign_date: {
 			type: DataTypes.DATE,
 			allowNull: true,
+			defaultValue: new Date(),
 		},
 		project_id: {
 			type: DataTypes.INTEGER,
