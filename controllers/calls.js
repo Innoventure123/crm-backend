@@ -12,6 +12,7 @@ exports.addCall = async (req, res) => {
 			...data,
 			assign_by: req.user.id,
 			added_by: req.user.id,
+			converted_by: req.user.id,
 			created_at: new Date(),
 			updated_at: new Date(),
 		});

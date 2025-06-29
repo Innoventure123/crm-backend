@@ -140,8 +140,8 @@ const Call = sequelize.define(
 		},
 		converted_by: {
 			type: DataTypes.INTEGER.UNSIGNED,
-			// allowNull: true,
-			defaultValue: 0,
+			allowNull: true,
+			defaultValue: null,
 		},
 		company_id: {
 			type: DataTypes.INTEGER,
