@@ -8,6 +8,9 @@ exports.addCall = async (req, res) => {
 	try {
 		const data = req.body;
 
+		if (data.next_follow_up == "yes") {
+			data.status = "Follow-up";
+		}
 		const newCall = await Calls.create({
 			...data,
 			assign_by: req.user.id,

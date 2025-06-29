@@ -92,7 +92,7 @@ const Call = sequelize.define(
 		next_follow_up: {
 			type: DataTypes.ENUM("yes", "no"),
 			allowNull: false,
-			defaultValue: "yes",
+			defaultValue: "no",
 		},
 		created_at: {
 			type: DataTypes.DATE,
