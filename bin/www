@@ -25,8 +25,12 @@ var server = http.createServer(app);
 if (process.env.NODE_ENV === "production") {
 	// If in production, create an HTTPS server instead
 	const options = {
-		key: fs.readFileSync("/etc/ssl/private/selfsigned.key"),
-		cert: fs.readFileSync("/etc/ssl/certs/selfsigned.crt"),
+		key: fs.readFileSync(
+			"/etc/letsencrypt/live/api.innoventurecrm.com/fullchain.pem"
+		),
+		cert: fs.readFileSync(
+			"/etc/letsencrypt/live/api.innoventurecrm.com/privkey.pem"
+		),
 	};
 	server = https.createServer(options, app);
 }
