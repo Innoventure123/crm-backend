@@ -564,7 +564,7 @@ exports.getDashboard = async (req, res) => {
 		}
 
 		// Owner Dashboard
-		if (role == "owner") {
+		if (role == "owner" || role == "process_head") {
 			const where = { ...periodFilter(start, end) };
 
 			const [totalAgents, totalTL, totalCalls, grouped] = await Promise.all([
