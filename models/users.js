@@ -195,6 +195,7 @@ User.associate = function (models) {
 	// 	onDelete: "SET NULL",
 	// 	onUpdate: "CASCADE",
 	// });
+	User.hasMany(models.Call, { as: "calls", foreignKey: "agent_id" });
 
 	User.hasMany(models.UserPermission, {
 		foreignKey: "user_id",

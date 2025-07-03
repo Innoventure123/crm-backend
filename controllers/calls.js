@@ -1,8 +1,13 @@
-const { Op } = require("sequelize");
+const { Op, fn, col } = require("sequelize");
 const Calls = require("../models/calls");
 const Users = require("../models/users");
 const Project = require("../models/projects");
 const Product = require("../models/products");
+const {
+	rowsToStatMap,
+	periodFilter,
+	caseCount,
+} = require("../utils/helperFunctions");
 
 exports.addCall = async (req, res) => {
 	try {
@@ -384,5 +389,220 @@ exports.getCreditQueues = async (req, res) => {
 			message: "Internal Server Error",
 			error: error.message,
 		});
+	}
+};
+
+exports.getDashboard = async (req, res) => {
+	try {
+		const { start, end } = req.query;
+		const user_id = req.user.id;
+
+		const findMyProfile = await Users.findByPk(user_id);
+
+		if (!findMyProfile) {
+			return res
+				.status(400)
+				.json({ success: false, message: "User not found" });
+		}
+
+		const role = findMyProfile.role;
+
+		// Agent Dashboard
+		if (role == "agent") {
+			const where = { agent_id: user_id, ...periodFilter(start, end) };
+			const totalCalls = await Calls.count({ where });
+
+			const grouped = await Calls.findAll({
+				attributes: ["status", [fn("COUNT", "*"), "count"]],
+				where,
+				group: ["status"],
+			});
+
+			const stats = rowsToStatMap(grouped);
+
+			return res.status(200).json({
+				success: true,
+				message: "Data fetched",
+				data: { totalCalls, ...stats },
+			});
+		}
+
+		// Team Leader Dashboard
+		if (role == "team_lead") {
+			const agents = await Users.findAll({
+				where: { manager_id: user_id, role: "agent" },
+				attributes: ["id", "name"],
+				raw: true,
+			});
+
+			const agentIds = agents.map((a) => a.id);
+			if (!agentIds.length)
+				return res.status(200).json({
+					success: true,
+					message: "Data fetched",
+					data: { totalCalls: 0 },
+				});
+
+			const where = {
+				agent_id: { [Op.in]: agentIds },
+				...periodFilter(start, end),
+			};
+			const totalCalls = await Calls.count({ where });
+
+			const grouped = await Calls.findAll({
+				attributes: ["status", [fn("COUNT", "*"), "count"]],
+				where,
+				group: ["status"],
+			});
+
+			const stats = rowsToStatMap(grouped);
+
+			// Table View
+			const table = await Calls.findAll({
+				attributes: [
+					"agent_id",
+					[fn("COUNT", "*"), "calls"],
+					[caseCount("Interested"), "interested"],
+					[caseCount("Under Process"), "underProcess"],
+					[caseCount("Approved"), "approved"],
+					[caseCount("Rejected"), "rejected"],
+					[caseCount("Follow-up"), "followUp"],
+					[caseCount("Not Interested"), "notInterested"],
+				],
+				where,
+				group: ["agent_id"],
+				raw: true,
+			});
+
+			const agentMap = Object.fromEntries(agents.map((a) => [a.id, a.name]));
+			const formattedTable = table.map((row) => ({
+				agentName: agentMap[row.agent_id],
+				...row,
+			}));
+
+			return res.status(200).json({
+				success: true,
+				message: "Data fetched",
+				data: { totalCalls, stats, table: formattedTable },
+			});
+		}
+
+		// Sale Coordinator Dashboard
+		if (role == "sales_coordinator") {
+			const whereCommon = periodFilter(start, end);
+
+			const [interested, underProcess, rejected] = await Promise.all(
+				["Interested", "Under Process", "Rejected"].map((status) =>
+					Calls.findAll({
+						where: { status, ...whereCommon },
+						include: [{ model: Users, as: "agent", attributes: ["name"] }],
+						order: [["created_at", "DESC"]],
+					})
+				)
+			);
+
+			return res.status(200).json({
+				success: true,
+				message: "Data fetched",
+				data: { interested, underProcess, rejected },
+			});
+		}
+
+		// Unit Head Dashboard
+		if (role == "unit_head") {
+			const tlWhere = { role: "owner" };
+
+			const tls = await Users.findAll({
+				where: tlWhere,
+				attributes: ["id"],
+				raw: true,
+			});
+			const tlIds = tls.map((u) => u.id);
+
+			const agents = await Users.findAll({
+				where: { manager_id: { [Op.in]: tlIds }, role: "agent" },
+				attributes: ["id", "manager_id"],
+				raw: true,
+			});
+
+			const agentIds = agents.map((a) => a.id);
+			const where = {
+				agent_id: { [Op.in]: agentIds },
+				...periodFilter(start, end),
+			};
+
+			const tlRows = await Calls.findAll({
+				attributes: [
+					[col("agent.manager_id"), "teamLeaderId"],
+					[caseCount("Under Process"), "underProcess"],
+					[caseCount("Approved"), "approved"],
+					[caseCount("Rejected"), "rejected"],
+				],
+				include: [{ model: Users, as: "agent", attributes: [] }],
+				where,
+				group: ["agent.manager_id"],
+				raw: true,
+			});
+
+			const agentRows = await Calls.findAll({
+				attributes: [
+					"agent_id",
+					[caseCount("Under Process"), "underProcess"],
+					[caseCount("Approved"), "approved"],
+					[caseCount("Rejected"), "rejected"],
+				],
+				where,
+				group: ["agent_id"],
+				raw: true,
+			});
+
+			return res.status(200).json({
+				success: true,
+				message: "Data fetched",
+				data: { teamLeaderStats: tlRows, agentStats: agentRows },
+			});
+		}
+
+		// Owner Dashboard
+		if (role == "owner") {
+			const where = { ...periodFilter(start, end) };
+
+			const [totalAgents, totalTL, totalCalls, grouped] = await Promise.all([
+				Users.count({ where: { role: "agent" } }),
+				Users.count({ where: { role: "team_lead" } }),
+				Calls.count({ where }),
+				Calls.findAll({
+					attributes: ["status", [fn("COUNT", "*"), "count"]],
+					where,
+					group: ["status"],
+				}),
+			]);
+
+			const stats = rowsToStatMap(grouped);
+
+			const conversionRate = (
+				(stats.Approved / (stats.Interested || 1)) *
+				100
+			).toFixed(2);
+
+			return res.status(200).json({
+				success: true,
+				message: "Data fetched",
+				data: {
+					global: {
+						totalAgents,
+						totalTeamLeaders: totalTL,
+						totalCalls,
+						conversionRate,
+					},
+					stats,
+				},
+			});
+		}
+
+		return res.status(403).json({ message: "Unauthorized role" });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Server error", error });
 	}
 };

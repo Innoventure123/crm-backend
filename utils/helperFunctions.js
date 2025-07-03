@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, fn, literal } = require("sequelize");
 const User = require("../models/users");
 
 const bulkUpdateUsersWithManager = async (data) => {
@@ -158,3 +158,38 @@ const data = [
 ];
 
 // bulkUpdateUsersWithManager(data);
+
+const STATUS_LIST = [
+	"Interested",
+	"Under Process",
+	"Approved",
+	"Rejected",
+	"Follow-up",
+	"Not Interested",
+];
+
+exports.rowsToStatMap = (rows) => {
+	const result = Object.fromEntries(STATUS_LIST.map((s) => [s, 0]));
+	rows.forEach((row) => {
+		result[row.status] = +row.dataValues.count;
+	});
+	return result;
+};
+
+exports.caseCount = (status) =>
+	fn(
+		"SUM",
+		literal(`CASE WHEN \`Call\`.\`status\` = '${status}' THEN 1 ELSE 0 END`)
+	);
+
+exports.periodFilter = (start, end) => {
+	if (!start || !end) return {};
+	return {
+		created_at: {
+			[Op.between]: [
+				new Date(`${start}T00:00:00.000Z`),
+				new Date(`${end}T23:59:59.999Z`),
+			],
+		},
+	};
+};
