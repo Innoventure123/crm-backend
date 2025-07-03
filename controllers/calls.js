@@ -301,3 +301,88 @@ exports.deleteCall = async (req, res) => {
 		});
 	}
 };
+
+exports.getCreditQueues = async (req, res) => {
+	try {
+		let page = parseInt(req.query.page) || 1;
+		let limit = parseInt(req.query.limit) || 10;
+		let offset = (page - 1) * limit;
+
+		const user_id = req.user.id;
+
+		const findMyProfile = await Users.findByPk(user_id);
+
+		if (!findMyProfile) {
+			return res
+				.status(400)
+				.json({ success: false, message: "User not found" });
+		}
+
+		const params = { status: "Interested" };
+
+		if (findMyProfile.role == "team_lead") {
+			const findMyAgents = await Users.findAll({
+				where: { manager_id: user_id },
+			});
+			const agentIds = findMyAgents.map((agent) => agent.id);
+			params.agent_id = { [Op.in]: agentIds };
+		} else if (findMyProfile.role == "agent") {
+			params.agent_id = user_id;
+		}
+
+		const { count, rows } = await Calls.findAndCountAll({
+			where: params,
+			limit,
+			offset,
+			order: [["id", "DESC"]],
+			include: [
+				{
+					model: Users,
+					as: "agent",
+				},
+				{
+					model: Users,
+					as: "creator",
+				},
+				{
+					model: Users,
+					as: "editor",
+				},
+				{
+					model: Project,
+					as: "project_details",
+				},
+				{
+					model: Product,
+					as: "product_details",
+				},
+				{
+					model: Users,
+					as: "converter",
+				},
+				{
+					model: Users,
+					as: "assigner",
+				},
+			],
+		});
+
+		return res.status(200).json({
+			success: true,
+			message: "Credit Queue fetched",
+			data: rows,
+			meta: {
+				totalItems: count,
+				currentPage: page,
+				totalPages: Math.ceil(count / limit),
+			},
+		});
+	} catch (error) {
+		console.error("Error fetching Credit:", error);
+		return res.status(500).json({
+			success: false,
+			message: "Internal Server Error",
+			error: error.message,
+		});
+	}
+};
