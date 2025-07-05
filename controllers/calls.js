@@ -510,7 +510,7 @@ exports.getDashboard = async (req, res) => {
 
 		// Unit Head Dashboard
 		if (role == "unit_head") {
-			const tlWhere = { role: "owner" };
+			const tlWhere = { role: "team_lead" };
 
 			const tls = await Users.findAll({
 				where: tlWhere,
