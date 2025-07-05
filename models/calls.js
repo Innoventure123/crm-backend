@@ -119,6 +119,10 @@ const Call = sequelize.define(
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,
 		},
+		salary: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+		},
 		last_updated_by: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,

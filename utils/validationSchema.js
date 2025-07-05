@@ -27,6 +27,7 @@ exports.schema = {
 		assign_by: Joi.number().optional(),
 		last_assign_date: Joi.date().optional(),
 		project_id: Joi.number().optional(),
+		salary: Joi.number().max(6).optional(),
 	}),
 
 	updateCallSchema: Joi.object({
@@ -55,5 +56,6 @@ exports.schema = {
 		assign_by: Joi.number().integer().optional(),
 		last_assign_date: Joi.date().optional(),
 		project_id: Joi.number().integer().optional(),
+		salary: Joi.number().max(6).optional(),
 	}),
 };
