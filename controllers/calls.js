@@ -91,7 +91,7 @@ exports.getAllCallListing = async (req, res) => {
 				.json({ success: false, message: "User not found" });
 		}
 
-		const params = {};
+		const params = { [Op.ne]: "Interested" };
 
 		if (findMyProfile.role == "team_lead") {
 			const findMyAgents = await Users.findAll({
