@@ -44,8 +44,9 @@ const Call = sequelize.define(
 		// 	allowNull: true,
 		// },
 		salutation: {
-			type: DataTypes.ENUM("mr", "mrs", "miss", "dr", "sir", "madam"),
+			type: DataTypes.STRING(20), //"mr", "mrs", "miss", "dr", "sir", "madam"
 			allowNull: true,
+			defaultValue: null,
 		},
 		client_name: {
 			type: DataTypes.STRING(191),
