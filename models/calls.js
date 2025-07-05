@@ -171,10 +171,11 @@ const Call = sequelize.define(
 				"Not Interested",
 				"Approved",
 				"Under Process",
-				"Rejected"
+				"Rejected",
+				"Pending"
 			),
 			allowNull: true,
-			defaultValue: null,
+			defaultValue: "Pending",
 		},
 	},
 	{
