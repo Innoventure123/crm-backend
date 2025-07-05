@@ -27,7 +27,7 @@ const Call = sequelize.define(
 			defaultValue: 0,
 		},
 		agent_id: {
-			type: DataTypes.BIGINT.UNSIGNED,
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,
 		},
 		company_name: {
@@ -186,14 +186,12 @@ const Call = sequelize.define(
 );
 
 Call.associate = (models) => {
-	//   Call.belongsTo(models.Company, { foreignKey: 'company_id' });
 	Call.belongsTo(models.User, { foreignKey: "agent_id", as: "agent" });
 	Call.belongsTo(models.User, { foreignKey: "added_by", as: "creator" });
 	Call.belongsTo(models.User, { foreignKey: "last_updated_by", as: "editor" });
 	Call.belongsTo(models.User, { foreignKey: "assign_by", as: "assigner" });
 	Call.belongsTo(models.User, { foreignKey: "converted_by", as: "converter" });
 
-	//   Call.belongsTo(models.Currency, { foreignKey: 'currency_id' });
 	Call.belongsTo(models.Product, {
 		foreignKey: "product_id",
 		as: "product_details",

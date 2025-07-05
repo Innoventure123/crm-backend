@@ -1,6 +1,5 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../utils/db");
-const UserPermission = require("./user_permission");
 
 const User = sequelize.define(
 	"User",
@@ -171,6 +170,12 @@ const User = sequelize.define(
 			allowNull: false,
 			defaultValue: 5,
 		},
+		created_at: {
+			type: DataTypes.DATE,
+		},
+		updated_at: {
+			type: DataTypes.DATE,
+		},
 		manager_id: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: true,
@@ -190,11 +195,6 @@ User.associate = function (models) {
 	// 	onUpdate: "CASCADE",
 	// });
 
-	// User.belongsTo(models.Country, {
-	// 	foreignKey: "country_id",
-	// 	onDelete: "SET NULL",
-	// 	onUpdate: "CASCADE",
-	// });
 	User.hasMany(models.Call, { as: "calls", foreignKey: "agent_id" });
 
 	User.hasMany(models.UserPermission, {
