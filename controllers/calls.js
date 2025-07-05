@@ -91,7 +91,18 @@ exports.getAllCallListing = async (req, res) => {
 				.json({ success: false, message: "User not found" });
 		}
 
-		const params = { status: { [Op.ne]: "Interested" } };
+		const params = {
+			status: {
+				[Op.in]: [
+					"Follow-up",
+					"Call Back",
+					"Switched Off",
+					"Not Reachable",
+					"Not Interested",
+					"Pending",
+				],
+			},
+		};
 
 		if (findMyProfile.role == "team_lead") {
 			const findMyAgents = await Users.findAll({
@@ -100,7 +111,7 @@ exports.getAllCallListing = async (req, res) => {
 			const agentIds = findMyAgents.map((agent) => agent.id);
 			params.agent_id = { [Op.in]: agentIds };
 		} else if (findMyProfile.role == "agent") {
-			params.agent_id = user_id;
+			// params.agent_id = user_id;
 		} else if (findMyProfile.role == "sales_coordinator") {
 			params.status = "Interested";
 		}
@@ -323,8 +334,11 @@ exports.getCreditQueues = async (req, res) => {
 				.json({ success: false, message: "User not found" });
 		}
 
-		const params = { status: "Interested" };
-
+		const params = {
+			status: {
+				[Op.in]: ["Interested", "Approved", "Under Process", "Rejected"],
+			},
+		};
 		if (findMyProfile.role == "team_lead") {
 			const findMyAgents = await Users.findAll({
 				where: { manager_id: user_id },
