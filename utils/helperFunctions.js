@@ -119,7 +119,7 @@ const data = [
 		users: [
 			{ name: "Venky", new_role: "agent" },
 			{ name: "Chinnie", new_role: "agent" },
-			{ name: "Fahad Iqbal", new_role: "agent" },
+			{ name: "Fahad Iqbal", new_role: "process_head" },
 			{ name: "Faisal", new_role: "agent" },
 			{ name: "Nishanta", new_role: "agent" },
 			{ name: "Remaz", new_role: "agent" },
@@ -193,3 +193,32 @@ exports.periodFilter = (start, end) => {
 		},
 	};
 };
+
+const bcrypt = require("bcrypt");
+
+const updateAllUserPasswords = async () => {
+	try {
+		const users = await User.findAll();
+
+		for (const user of users) {
+			if (!user.email.includes("@")) continue;
+
+			const [namePart] = user.email.split("@");
+			const rawPassword = namePart + "@1234";
+			const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
+			await User.update(
+				{ password: hashedPassword },
+				{ where: { id: user.id } }
+			);
+
+			console.log(`Updated password for ${user.email}`);
+		}
+
+		console.log("All user passwords updated (hashed).");
+	} catch (error) {
+		console.error("Error updating user passwords:", error.message);
+	}
+};
+
+// updateAllUserPasswords();
