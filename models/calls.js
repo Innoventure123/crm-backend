@@ -135,7 +135,7 @@ const Call = sequelize.define(
 			defaultValue: null,
 		},
 		product_id: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
 		},
 		lead_id: {
@@ -154,7 +154,7 @@ const Call = sequelize.define(
 			defaultValue: 1,
 		},
 		assign_by: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
 		},
 		last_assign_date: {
@@ -163,7 +163,7 @@ const Call = sequelize.define(
 			defaultValue: new Date(),
 		},
 		project_id: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
 		},
 		status: {
