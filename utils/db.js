@@ -11,13 +11,13 @@ const sequelize = new Sequelize(
 );
 
 // Sync the database
-sequelize
-	.sync({ alter: true }) // Use force: false to avoid dropping tables in production
-	.then(() => {
-		console.log("Database synced successfully");
-	})
-	.catch((err) => {
-		console.error("Error syncing database:", err);
-	});
+// sequelize
+// 	.sync({ alter: true }) // Use force: false to avoid dropping tables in production
+// 	.then(() => {
+// 		console.log("Database synced successfully");
+// 	})
+// 	.catch((err) => {
+// 		console.error("Error syncing database:", err);
+// 	});
 
 module.exports = sequelize;
