@@ -437,76 +437,105 @@ exports.getDashboard = async (req, res) => {
 			return res.status(200).json({
 				success: true,
 				message: "Data fetched",
-				data: { totalCalls, ...stats },
+				data: {
+					global: {
+						totalAgents: 0,
+						totalTeamLeaders: 0,
+						totalCalls,
+						conversionRate: 0,
+						teamLeaderStats: 0,
+						agentStats: 0,
+					},
+					stats,
+				},
 			});
 		}
 
 		// Team Leader Dashboard
 		if (role == "team_lead") {
+			/* 1. Agents in this TL’s team */
 			const agents = await Users.findAll({
 				where: { manager_id: user_id, role: "agent" },
 				attributes: ["id", "name"],
 				raw: true,
 			});
-
 			const agentIds = agents.map((a) => a.id);
-			if (!agentIds.length)
-				return res.status(200).json({
-					success: true,
-					message: "Data fetched",
-					data: { totalCalls: 0 },
-				});
 
-			const where = {
+			/* 2. All calls by those agents in the period */
+			const whereCalls = {
 				agent_id: { [Op.in]: agentIds },
 				...periodFilter(start, end),
 			};
-			const totalCalls = await Calls.count({ where });
 
-			const grouped = await Calls.findAll({
-				attributes: ["status", [fn("COUNT", "*"), "count"]],
-				where,
-				group: ["status"],
-			});
+			/* 3. Widgets ---------------------------------------------------------- */
+			const [totalCalls, grouped] = await Promise.all([
+				Calls.count({ where: whereCalls }),
+				Calls.findAll({
+					attributes: ["status", [fn("COUNT", "*"), "count"]],
+					where: whereCalls,
+					group: ["status"],
+					raw: true,
+				}),
+			]);
 
-			const stats = rowsToStatMap(grouped);
+			const statsMap = rowsToStatMap(grouped); // fills zeros
 
-			// Table View
-			const table = await Calls.findAll({
-				attributes: [
-					"agent_id",
-					[fn("COUNT", "*"), "calls"],
-					[caseCount("Interested"), "interested"],
-					[caseCount("Under Process"), "underProcess"],
-					[caseCount("Approved"), "approved"],
-					[caseCount("Rejected"), "rejected"],
-					[caseCount("Follow-up"), "followUp"],
-					[caseCount("Not Interested"), "notInterested"],
-				],
-				where,
-				group: ["agent_id"],
-				raw: true,
-			});
+			/* 4. Per‑agent table --------------------------------------------------- */
+			// const rawTable = await Calls.findAll({
+			// 	attributes: [
+			// 		"agent_id",
+			// 		[fn("COUNT", "*"), "calls"],
+			// 		[caseCount("Interested"), "interested"],
+			// 		[caseCount("Under Process"), "underProcess"],
+			// 		[caseCount("Approved"), "approved"],
+			// 		[caseCount("Rejected"), "rejected"],
+			// 		[caseCount("Follow-up"), "followUp"],
+			// 		[caseCount("Not Interested"), "notInterested"],
+			// 		[caseCount("Pending"), "pending"],
+			// 	],
+			// 	where: whereCalls,
+			// 	group: ["agent_id"],
+			// 	raw: true,
+			// });
 
-			const agentMap = Object.fromEntries(agents.map((a) => [a.id, a.name]));
-			const formattedTable = table.map((row) => ({
-				agentName: agentMap[row.agent_id],
-				...row,
-			}));
+			// const agentNameMap = Object.fromEntries(
+			// 	agents.map((a) => [a.id, a.name])
+			// );
+			// const table = rawTable.map((r) => ({
+			// 	agentName: agentNameMap[r.agent_id],
+			// 	...r,
+			// }));
 
 			return res.status(200).json({
 				success: true,
 				message: "Data fetched",
-				data: { totalCalls, stats, table: formattedTable },
+				data: {
+					global: {
+						totalTeamLeaders: 0,
+						totalAgents: agentIds.length,
+						totalCalls,
+						conversionRate: 0,
+						teamLeaderStats: 0,
+						agentStats: 0,
+					},
+					stats: statsMap,
+				},
 			});
 		}
 
 		// Sale Coordinator Dashboard
 		if (role == "sales_coordinator") {
 			const whereCommon = periodFilter(start, end);
+			/* 1. Pull call lists for all 4 key statuses */
+			const statusList = [
+				"Interested",
+				"Under Process",
+				"Rejected",
+				"Approved",
+			];
 
-			const [interested, underProcess, rejected] = await Promise.all(
-				["Interested", "Under Process", "Rejected"].map((status) =>
+			const [interested, underProcess, rejected, approved] = await Promise.all(
+				statusList.map((status) =>
 					Calls.findAll({
 						where: { status, ...whereCommon },
 						include: [{ model: Users, as: "agent", attributes: ["name"] }],
@@ -515,65 +544,88 @@ exports.getDashboard = async (req, res) => {
 				)
 			);
 
+			/* 2. Widget counts ---------------------------------------------------- */
+			const grouped = await Calls.findAll({
+				attributes: ["status", [fn("COUNT", "*"), "count"]],
+				where: whereCommon,
+				group: ["status"],
+			});
+			const statsMap = rowsToStatMap(grouped); // fills zeros
+
+			// totalCalls = sum of all status buckets
+			const totalCalls = Object.values(statsMap).reduce((a, b) => a + b, 0);
+
+			// distinct agents that appear in any of the lists
+			const agentIds = new Set();
+			for (const arr of [interested, underProcess, rejected, approved]) {
+				arr.forEach((c) => agentIds.add(c.agent_id));
+			}
+
 			return res.status(200).json({
 				success: true,
 				message: "Data fetched",
-				data: { interested, underProcess, rejected },
+				data: {
+					global: {
+						totalCalls,
+						totalAgents: agentIds.size,
+						conversionRate: 0,
+						teamLeaderStats: [],
+						agentStats: [],
+					},
+					stats: statsMap,
+				},
 			});
 		}
 
 		// Unit Head Dashboard
 		if (role == "unit_head") {
-			const tlWhere = { role: "team_lead" };
-
-			const tls = await Users.findAll({
-				where: tlWhere,
+			const teamLeaders = await Users.findAll({
+				where: { role: "team_lead" },
 				attributes: ["id"],
 				raw: true,
 			});
-			const tlIds = tls.map((u) => u.id);
+			const tlIds = teamLeaders.map((tl) => tl.id);
 
+			/* 2. Agents who report to those TLs */
 			const agents = await Users.findAll({
 				where: { manager_id: { [Op.in]: tlIds }, role: "agent" },
 				attributes: ["id", "manager_id"],
 				raw: true,
 			});
-
 			const agentIds = agents.map((a) => a.id);
-			const where = {
+
+			/* 3. Calls made by those agents in the chosen period */
+			const whereCalls = {
 				agent_id: { [Op.in]: agentIds },
 				...periodFilter(start, end),
 			};
 
-			const tlRows = await Calls.findAll({
-				attributes: [
-					[col("agent.manager_id"), "teamLeaderId"],
-					[caseCount("Under Process"), "underProcess"],
-					[caseCount("Approved"), "approved"],
-					[caseCount("Rejected"), "rejected"],
-				],
-				include: [{ model: Users, as: "agent", attributes: [] }],
-				where,
-				group: ["agent.manager_id"],
-				raw: true,
-			});
+			/* 4. Widgets (total counts + per‑status stats) ------------------------- */
+			const [totalCalls, grouped] = await Promise.all([
+				Calls.count({ where: whereCalls }),
+				Calls.findAll({
+					attributes: ["status", [fn("COUNT", "*"), "count"]],
+					where: whereCalls,
+					group: ["status"],
+				}),
+			]);
 
-			const agentRows = await Calls.findAll({
-				attributes: [
-					"agent_id",
-					[caseCount("Under Process"), "underProcess"],
-					[caseCount("Approved"), "approved"],
-					[caseCount("Rejected"), "rejected"],
-				],
-				where,
-				group: ["agent_id"],
-				raw: true,
-			});
+			const stats = rowsToStatMap(grouped); // fills zeros for every status
 
 			return res.status(200).json({
 				success: true,
 				message: "Data fetched",
-				data: { teamLeaderStats: tlRows, agentStats: agentRows },
+				data: {
+					global: {
+						totalTeamLeaders: tlIds.length,
+						totalAgents: agentIds.length,
+						totalCalls,
+						conversionRate: 0,
+						teamLeaderStats: [],
+						agentStats: [],
+					},
+					stats,
+				},
 			});
 		}
 
@@ -608,6 +660,8 @@ exports.getDashboard = async (req, res) => {
 						totalTeamLeaders: totalTL,
 						totalCalls,
 						conversionRate,
+						teamLeaderStats: [],
+						agentStats: [],
 					},
 					stats,
 				},
