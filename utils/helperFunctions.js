@@ -200,11 +200,13 @@ const updateAllUserPasswords = async () => {
 	try {
 		const users = await User.findAll();
 
+		const arr = [];
+
 		for (const user of users) {
 			if (!user.email.includes("@")) continue;
 
 			const [namePart] = user.email.split("@");
-			const rawPassword = namePart + "@1234";
+			const rawPassword = namePart + "@" + user.id + "IFB";
 			const hashedPassword = await bcrypt.hash(rawPassword, 10);
 
 			await User.update(
@@ -213,12 +215,14 @@ const updateAllUserPasswords = async () => {
 			);
 
 			console.log(`Updated password for ${user.email}`);
+
+			arr.push({ email: user.email, password: rawPassword });
 		}
 
-		console.log("All user passwords updated (hashed).");
+		console.log("All user passwords updated (hashed).", JSON.stringify(arr));
 	} catch (error) {
 		console.error("Error updating user passwords:", error.message);
 	}
 };
 
-// updateAllUserPasswords();
+updateAllUserPasswords();
