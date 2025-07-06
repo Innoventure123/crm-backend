@@ -225,4 +225,4 @@ const updateAllUserPasswords = async () => {
 	}
 };
 
-updateAllUserPasswords();
+// updateAllUserPasswords();
