@@ -177,7 +177,7 @@ const data = [
 	},
 ];
 
-bulkUpdateUsersWithManager(data);
+// bulkUpdateUsersWithManager(data);
 
 const STATUS_LIST = [
 	"Interested",
@@ -246,3 +246,142 @@ const updateAllUserPasswords = async () => {
 };
 
 // updateAllUserPasswords();
+
+async function insertNewUser() {
+	const users = [
+		{
+			name: "Divya Lekshmi",
+			email: "divya@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{ name: "Bipin", email: "bipin@innoventure.ae", role: "agent", role_id: 5 },
+		{
+			name: "Mishiel",
+			email: "mishiel@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{ name: "Kent", email: "kent@innoventure.ae", role: "agent", role_id: 5 },
+		{
+			name: "Mahmoud Gaber",
+			email: "mahmoud@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{
+			name: "Sayed Atef",
+			email: "sayed@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{ name: "Nada", email: "nada@innoventure.ae", role: "agent", role_id: 5 },
+		{ name: "Sinan", email: "sinan@innoventure.ae", role: "agent", role_id: 5 },
+		{
+			name: "Abdallah Salag",
+			email: "salag@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{
+			name: "Mustafa",
+			email: "mustafa@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{
+			name: "Abdallah Bakhit",
+			email: "bakhit@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{
+			name: "Amil",
+			email: "amil@innoventure.ae",
+			role: "team_lead",
+			role_id: 4,
+		},
+		{
+			name: "Sameer",
+			email: "sameer@innoventure.ae",
+			role: "team_lead",
+			role_id: 4,
+		},
+		{
+			name: "Libi",
+			email: "libi@innoventure.ae",
+			role: "team_lead",
+			role_id: 4,
+		},
+		{
+			name: "Chrisvel J",
+			email: "chrisvel@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{ name: "Imran", email: "imran@innoventure.ae", role: "agent", role_id: 5 },
+		{
+			name: "Prabha SH",
+			email: "prabha@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{
+			name: "Talha Ansari",
+			email: "talha@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{ name: "Harsh", email: "harsh@innoventure.ae", role: "agent", role_id: 5 },
+		{
+			name: "Ashwini",
+			email: "ashwini@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{
+			name: "Pratibha K",
+			email: "pratibha@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{
+			name: "Mashak Shaikh",
+			email: "mashak@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{
+			name: "Vikas Mishra",
+			email: "vikas@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{
+			name: "Yudi Krishna",
+			email: "yudi@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+		{ name: "Hanif", email: "hanif@innoventure.ae", role: "agent", role_id: 5 },
+		{
+			name: "Deepti",
+			email: "deepti@innoventure.ae",
+			role: "agent",
+			role_id: 5,
+		},
+	];
+
+	const insertedUsers = await User.bulkCreate(users, { returning: true });
+	const arr = [];
+	for (const user of insertedUsers) {
+		const [namePart] = user.email.split("@");
+		const rawPassword = `${namePart}@${user.id}IFB`;
+		const hashedPassword = await bcrypt.hash(rawPassword, 10);
+		arr.push({ email: user.email, password: rawPassword });
+		await User.update({ password: hashedPassword }, { where: { id: user.id } });
+	}
+	console.log(JSON.stringify(arr));
+}
+
+// insertNewUser();
