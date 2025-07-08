@@ -457,7 +457,6 @@ exports.getDashboard = async (req, res) => {
 			const agents = await Users.findAll({
 				where: { manager_id: user_id, role: "agent" },
 				attributes: ["id", "name"],
-				raw: true,
 			});
 			const agentIds = agents.map((a) => a.id);
 
@@ -474,7 +473,6 @@ exports.getDashboard = async (req, res) => {
 					attributes: ["status", [fn("COUNT", "*"), "count"]],
 					where: whereCalls,
 					group: ["status"],
-					raw: true,
 				}),
 			]);
 
@@ -582,7 +580,6 @@ exports.getDashboard = async (req, res) => {
 			const teamLeaders = await Users.findAll({
 				where: { role: "team_lead" },
 				attributes: ["id"],
-				raw: true,
 			});
 			const tlIds = teamLeaders.map((tl) => tl.id);
 
@@ -590,7 +587,6 @@ exports.getDashboard = async (req, res) => {
 			const agents = await Users.findAll({
 				where: { manager_id: { [Op.in]: tlIds }, role: "agent" },
 				attributes: ["id", "manager_id"],
-				raw: true,
 			});
 			const agentIds = agents.map((a) => a.id);
 
