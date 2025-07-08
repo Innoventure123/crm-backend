@@ -3,6 +3,7 @@ const User = require("../models/users");
 
 const bulkUpdateUsersWithManager = async (data) => {
 	try {
+		const arr = [];
 		for (const group of data) {
 			const { team_lead, users } = group;
 
@@ -14,6 +15,7 @@ const bulkUpdateUsersWithManager = async (data) => {
 				},
 			});
 			if (!manager) {
+				arr.push({ team_lead });
 				console.warn(
 					`⚠️ Team lead "${team_lead}" not found or not a team_lead. Skipping this group.`
 				);
@@ -41,6 +43,8 @@ const bulkUpdateUsersWithManager = async (data) => {
 				});
 				if (!user) {
 					console.warn(`❌ User "${name}" not found. Skipping.`);
+					arr.push({ agent: name });
+
 					continue;
 				}
 
@@ -54,7 +58,7 @@ const bulkUpdateUsersWithManager = async (data) => {
 				);
 			}
 		}
-		console.log("✅ Bulk update completed.");
+		console.log("✅ Bulk update completed.", JSON.stringify(arr));
 	} catch (error) {
 		console.error("🔥 Error during bulk update:", error);
 	}
@@ -64,32 +68,32 @@ const data = [
 	{
 		team_lead: "Fahaz",
 		users: [
-			{ name: "Sunita", new_role: "agent" },
-			{ name: "Ambika", new_role: "agent" },
-			{ name: "Bipin", new_role: "agent" },
-			{ name: "Heena", new_role: "agent" },
 			{ name: "Rafeek", new_role: "agent" },
-			{ name: "Syed", new_role: "agent" },
-			{ name: "Divya", new_role: "agent" },
-			{ name: "Divya Ashok", new_role: "agent" },
-		],
-	},
-	{
-		team_lead: "Wenica",
-		users: [
-			{ name: "Carmen", new_role: "agent" },
-			{ name: "James", new_role: "agent" },
-			{ name: "Rochelle", new_role: "agent" },
-			{ name: "Saddam", new_role: "agent" },
-			{ name: "Basit", new_role: "agent" },
-			{ name: "Kenneth", new_role: "agent" },
-			{ name: "Misheil", new_role: "agent" },
-			{ name: "Xander", new_role: "agent" },
-			{ name: "Sam", new_role: "agent" },
+			{ name: "Ambika", new_role: "agent" },
+			{ name: "Divya Lekshmi", new_role: "agent" },
+			{ name: "Sunita", new_role: "agent" },
+			{ name: "Heena", new_role: "agent" },
+			{ name: "Bipin", new_role: "agent" },
+			{ name: "Mishiel", new_role: "agent" },
 			{ name: "Kent", new_role: "agent" },
-			{ name: "Dae", new_role: "agent" },
 		],
 	},
+	// {
+	// 	team_lead: "Wenica",
+	// 	users: [
+	// 		{ name: "Carmen", new_role: "agent" },
+	// 		{ name: "James", new_role: "agent" },
+	// 		{ name: "Rochelle", new_role: "agent" },
+	// 		{ name: "Saddam", new_role: "agent" },
+	// 		{ name: "Basit", new_role: "agent" },
+	// 		{ name: "Kenneth", new_role: "agent" },
+	// 		{ name: "Misheil", new_role: "agent" },
+	// 		{ name: "Xander", new_role: "agent" },
+	// 		{ name: "Sam", new_role: "agent" },
+	// 		{ name: "Kent", new_role: "agent" },
+	// 		{ name: "Dae", new_role: "agent" },
+	// 	],
+	// },
 	{
 		team_lead: "Rabeea",
 		users: [
@@ -105,59 +109,75 @@ const data = [
 			{ name: "Abdallah Bakhit", new_role: "agent" },
 		],
 	},
+	// {
+	// 	team_lead: "Reny",
+	// 	users: [
+	// 		{ name: "Val", new_role: "agent" },
+	// 		{ name: "Datu", new_role: "agent" },
+	// 		{ name: "Ruksana (New)", new_role: "agent" },
+	// 		{ name: "Hemanth (New)", new_role: "agent" },
+	// 	],
+	// },
+	// {
+	// 	team_lead: "Braj",
+	// 	users: [
+	// 		{ name: "Venky", new_role: "agent" },
+	// 		{ name: "Chinnie", new_role: "agent" },
+	// 		{ name: "Fahad Iqbal", new_role: "process_head" },
+	// 		{ name: "Faisal", new_role: "agent" },
+	// 		{ name: "Nishanta", new_role: "agent" },
+	// 		{ name: "Remaz", new_role: "agent" },
+	// 		{ name: "Lourdes", new_role: "agent" },
+	// 		{ name: "Asif", new_role: "agent" },
+	// 		{ name: "Kamal", new_role: "agent" },
+	// 	],
+	// },
+	// {
+	// 	team_lead: "Rasil",
+	// 	users: [
+	// 		// { name: "Rasil (ATL)", new_role: "agent" },
+	// 		{ name: "Mansour", new_role: "agent" },
+	// 		{ name: "Janu", new_role: "agent" },
+	// 		{ name: "Niyas", new_role: "agent" },
+	// 	],
+	// },
 	{
-		team_lead: "Reny",
+		team_lead: "Amil",
 		users: [
-			{ name: "Val", new_role: "agent" },
-			{ name: "Datu", new_role: "agent" },
-			{ name: "Ruksana (New)", new_role: "agent" },
-			{ name: "Hemanth (New)", new_role: "agent" },
+			{ name: "Chrisvel J", new_role: "agent" },
+			{ name: "Imran", new_role: "agent" },
+			{ name: "Prabha SH", new_role: "agent" },
+			{ name: "Talha Ansari", new_role: "agent" },
+			{ name: "Harsh", new_role: "agent" },
+			{ name: "Rochelle", new_role: "agent" },
+			{ name: "Ashwini", new_role: "agent" },
+			{ name: "Basit", new_role: "agent" },
 		],
 	},
 	{
-		team_lead: "Braj",
+		team_lead: "Sameer",
 		users: [
-			{ name: "Venky", new_role: "agent" },
-			{ name: "Chinnie", new_role: "agent" },
-			{ name: "Fahad Iqbal", new_role: "process_head" },
-			{ name: "Faisal", new_role: "agent" },
-			{ name: "Nishanta", new_role: "agent" },
-			{ name: "Remaz", new_role: "agent" },
-			{ name: "Lourdes", new_role: "agent" },
-			{ name: "Asif", new_role: "agent" },
-			{ name: "Kamal", new_role: "agent" },
+			{ name: "Pratibha K", new_role: "agent" },
+			{ name: "Mashak Shaikh", new_role: "agent" },
+			{ name: "Priyanka", new_role: "agent" },
+			{ name: "Kenneth", new_role: "agent" },
+			{ name: "James", new_role: "agent" },
+			{ name: "Vikas Mishra", new_role: "agent" },
+			{ name: "Yudi Krishna", new_role: "agent" },
+			{ name: "Saddam", new_role: "agent" },
 		],
 	},
 	{
-		team_lead: "Rasil",
+		team_lead: "Libi",
 		users: [
-			// { name: "Rasil (ATL)", new_role: "agent" },
-			{ name: "Mansour", new_role: "agent" },
-			{ name: "Janu", new_role: "agent" },
-			{ name: "Niyas", new_role: "agent" },
+			{ name: "Hanif", new_role: "agent" },
+			{ name: "Ravi", new_role: "agent" },
+			{ name: "Deepti", new_role: "agent" },
 		],
-	},
-
-	{
-		team_lead: "AMIL",
-		users: [
-			{ name: "PRATHIBA", new_role: "agent" },
-			{ name: "IMRAN", new_role: "agent" },
-			{ name: "CRISH", new_role: "agent" },
-			{ name: "PRIYANKA", new_role: "agent" },
-			{ name: "TALHA", new_role: "agent" },
-			{ name: "PRABHA", new_role: "agent" },
-			{ name: "MASHAK", new_role: "agent" },
-			{ name: "PRIYANKA", new_role: "agent" },
-		],
-	},
-	{
-		team_lead: "SAMEER",
-		users: [],
 	},
 ];
 
-// bulkUpdateUsersWithManager(data);
+bulkUpdateUsersWithManager(data);
 
 const STATUS_LIST = [
 	"Interested",
