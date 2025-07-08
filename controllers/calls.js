@@ -646,10 +646,7 @@ exports.getDashboard = async (req, res) => {
 
 			const stats = rowsToStatMap(grouped);
 
-			const conversionRate = (
-				(stats.Approved / (stats.Interested || 1)) *
-				100
-			).toFixed(2);
+			const conversionRate = (stats.Approved / (stats.Interested || 1)) * 100;
 
 			return res.status(200).json({
 				success: true,
@@ -659,7 +656,7 @@ exports.getDashboard = async (req, res) => {
 						totalAgents,
 						totalTeamLeaders: totalTL,
 						totalCalls,
-						conversionRate,
+						conversionRate: parseInt(conversionRate),
 						teamLeaderStats: [],
 						agentStats: [],
 					},
