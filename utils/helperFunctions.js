@@ -371,24 +371,30 @@ async function insertNewUser() {
 		// 	role_id: 5,
 		// },
 
+		// {
+		// 	name: "Ravi",
+		// 	email: "ravi@innoventure.ae",
+		// 	role: "agent",
+		// 	role_id: 5,
+		// },
+		// {
+		// 	name: "Ahmad Saber",
+		// 	email: "ahmed@innoventure.ae",
+		// 	role: "agent",
+		// 	role_id: 5,
+		// },
 		{
-			name: "Ravi",
-			email: "ravi@innoventure.ae",
+			name: "Kinjal",
+			email: "kinjal@innoventure.ae",
 			role: "agent",
 			role_id: 5,
 		},
 		{
-			name: "Ahmad Saber",
-			email: "ahmed@innoventure.ae",
+			name: "Krishna",
+			email: "krishna@innoventure.ae",
 			role: "agent",
 			role_id: 5,
 		},
-
-
-		
-
-
-
 	];
 
 	const insertedUsers = await User.bulkCreate(users, { returning: true });
