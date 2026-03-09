@@ -58,4 +58,56 @@ exports.schema = {
 		project_id: Joi.number().integer().optional(),
 		salary: Joi.number().max(6).optional(),
 	}),
+
+	createUserSchema: Joi.object({
+		name: Joi.string().max(191).required(),
+		email: Joi.string().email().max(191).allow(null, "").optional(),
+		password: Joi.string().min(6).max(191).required(),
+		mobile: Joi.string().max(191).allow(null, "").optional(),
+		gender: Joi.string().valid("male", "female", "others").allow(null).optional(),
+		role: Joi.string()
+			.valid(
+				"owner",
+				"unit_head",
+				"sales_coordinator",
+				"team_lead",
+				"agent",
+				"process_head"
+			)
+			.optional(),
+		role_id: Joi.number().integer().min(1).max(255).optional(),
+		manager_id: Joi.number().integer().allow(null).optional(),
+		status: Joi.string().valid("active", "deactive").optional(),
+		login: Joi.string().valid("enable", "disable").optional(),
+		mac_id: Joi.string().min(1).required(),
+		mac_login: Joi.string().valid("enable", "disable").optional(),
+	}),
+
+	updateUserSchema: Joi.object({
+		name: Joi.string().max(191).optional(),
+		email: Joi.string().email().max(191).allow(null, "").optional(),
+		password: Joi.string().min(6).max(191).optional(),
+		mobile: Joi.string().max(191).allow(null, "").optional(),
+		gender: Joi.string().valid("male", "female", "others").allow(null).optional(),
+		role: Joi.string()
+			.valid(
+				"owner",
+				"unit_head",
+				"sales_coordinator",
+				"team_lead",
+				"agent",
+				"process_head"
+			)
+			.optional(),
+		role_id: Joi.number().integer().min(1).max(255).optional(),
+		manager_id: Joi.number().integer().allow(null).optional(),
+		status: Joi.string().valid("active", "deactive").optional(),
+		login: Joi.string().valid("enable", "disable").optional(),
+		mac_id: Joi.string().min(1).optional(),
+		mac_login: Joi.string().valid("enable", "disable").optional(),
+	}).min(1),
+
+	updateUserStatusSchema: Joi.object({
+		status: Joi.string().valid("active", "deactive").required(),
+	}),
 };
