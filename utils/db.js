@@ -10,6 +10,15 @@ const sequelize = new Sequelize(
 	}
 );
 
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Database connected successfully");
+  })
+  .catch((err) => {
+    console.error("Database connection error:", err);
+  });
+
 // Sync the database
 // sequelize
 // 	.sync({ alter: true }) // Use force: false to avoid dropping tables in production
