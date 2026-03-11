@@ -2,208 +2,215 @@ const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../utils/db");
 
 const User = sequelize.define(
-	"User",
-	{
-		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			autoIncrement: true,
-			primaryKey: true,
-		},
-		// company_id: {
-		// 	type: DataTypes.INTEGER.UNSIGNED,
-		// 	allowNull: true,
-		// },
-		name: {
-			type: DataTypes.STRING(191),
-			allowNull: false,
-		},
-		email: {
-			type: DataTypes.STRING(191),
-			allowNull: true,
-		},
-		password: {
-			type: DataTypes.STRING(191),
-			allowNull: false,
-		},
-		two_factor_secret: {
-			type: DataTypes.TEXT,
-		},
-		two_factor_recovery_codes: {
-			type: DataTypes.TEXT,
-		},
-		two_factor_confirmed: {
-			type: DataTypes.TINYINT,
-			allowNull: false,
-			defaultValue: 0,
-		},
-		two_factor_email_confirmed: {
-			type: DataTypes.TINYINT,
-			allowNull: false,
-			defaultValue: 0,
-		},
-		image: {
-			type: DataTypes.STRING(191),
-		},
-		mobile: {
-			type: DataTypes.STRING(191),
-		},
-		gender: {
-			type: DataTypes.ENUM("male", "female", "others"),
-		},
-		salutation: {
-			type: DataTypes.ENUM("mr", "mrs", "miss", "dr", "sir", "madam"),
-		},
-		locale: {
-			type: DataTypes.STRING(191),
-			allowNull: false,
-			defaultValue: "en",
-		},
-		status: {
-			type: DataTypes.ENUM("active", "deactive"),
-			allowNull: false,
-			defaultValue: "active",
-		},
-		login: {
-			type: DataTypes.ENUM("enable", "disable"),
-			allowNull: false,
-			defaultValue: "enable",
-		},
-		onesignal_player_id: {
-			type: DataTypes.TEXT,
-		},
-		last_login: {
-			type: DataTypes.DATE,
-			defaultValue: new Date(),
-		},
-		email_notifications: {
-			type: DataTypes.TINYINT,
-			allowNull: false,
-			defaultValue: 1,
-		},
-		country_id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: true,
-		},
-		dark_theme: {
-			type: DataTypes.TINYINT,
-			allowNull: false,
-		},
-		rtl: {
-			type: DataTypes.TINYINT,
-			allowNull: false,
-		},
-		two_fa_verify_via: {
-			type: DataTypes.ENUM("email", "google_authenticator", "both"),
-			allowNull: true,
-		},
-		two_factor_code: {
-			type: DataTypes.STRING(191),
-			comment: "when authenticator is email",
-		},
-		two_factor_expires_at: {
-			type: DataTypes.DATE,
-		},
-		admin_approval: {
-			type: DataTypes.TINYINT,
-			allowNull: false,
-			defaultValue: 1,
-		},
-		permission_sync: {
-			type: DataTypes.TINYINT,
-			allowNull: false,
-			defaultValue: 1,
-		},
-		google_calendar_status: {
-			type: DataTypes.TINYINT,
-			allowNull: false,
-			defaultValue: 1,
-		},
-		remember_token: {
-			type: DataTypes.STRING(100),
-		},
-		customised_permissions: {
-			type: DataTypes.TINYINT,
-			allowNull: false,
-			defaultValue: 0,
-		},
-		stripe_id: {
-			type: DataTypes.STRING(191),
-		},
-		pm_type: {
-			type: DataTypes.STRING(191),
-		},
-		pm_last_four: {
-			type: DataTypes.STRING(4),
-		},
-		trial_ends_at: {
-			type: DataTypes.DATE,
-		},
-		mac_id: {
-			type: DataTypes.TEXT,
-			allowNull: false,
-		},
-		mac_login: {
-			type: DataTypes.STRING(50),
-			allowNull: false,
-			defaultValue: "disable",
-		},
-		created_at: {
-			type: DataTypes.DATE,
-		},
-		updated_at: {
-			type: DataTypes.DATE,
-		},
-		role: {
-			type: DataTypes.ENUM(
-				"owner",
-				"unit_head",
-				"sales_coordinator",
-				"team_lead",
-				"agent",
-				"process_head"
-			),
-			allowNull: false,
-			defaultValue: "agent",
-		},
-		role_id: {
-			type: DataTypes.TINYINT.UNSIGNED,
-			allowNull: false,
-			defaultValue: 5,
-		},
-		created_at: {
-			type: DataTypes.DATE,
-		},
-		updated_at: {
-			type: DataTypes.DATE,
-		},
-		manager_id: {
-			type: DataTypes.INTEGER.UNSIGNED,
-			allowNull: true,
-		},
-	},
-	{
-		tableName: "users",
-		underscored: true,
-		timestamps: true,
-	}
+  "User",
+  {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    // company_id: {
+    // 	type: DataTypes.INTEGER.UNSIGNED,
+    // 	allowNull: true,
+    // },
+    name: {
+      type: DataTypes.STRING(191),
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING(191),
+      allowNull: true,
+    },
+    password: {
+      type: DataTypes.STRING(191),
+      allowNull: false,
+    },
+    two_factor_secret: {
+      type: DataTypes.TEXT,
+    },
+    two_factor_recovery_codes: {
+      type: DataTypes.TEXT,
+    },
+    two_factor_confirmed: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    two_factor_email_confirmed: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    image: {
+      type: DataTypes.STRING(191),
+    },
+    mobile: {
+      type: DataTypes.STRING(191),
+    },
+    gender: {
+      type: DataTypes.ENUM("male", "female", "others"),
+    },
+    salutation: {
+      type: DataTypes.ENUM("mr", "mrs", "miss", "dr", "sir", "madam"),
+    },
+    locale: {
+      type: DataTypes.STRING(191),
+      allowNull: false,
+      defaultValue: "en",
+    },
+    status: {
+      type: DataTypes.ENUM("active", "deactive"),
+      allowNull: false,
+      defaultValue: "active",
+    },
+    login: {
+      type: DataTypes.ENUM("enable", "disable"),
+      allowNull: false,
+      defaultValue: "enable",
+    },
+    onesignal_player_id: {
+      type: DataTypes.TEXT,
+    },
+    last_login: {
+      type: DataTypes.DATE,
+      defaultValue: new Date(),
+    },
+    email_notifications: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 1,
+    },
+    country_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+    },
+    dark_theme: {
+      type: DataTypes.TINYINT,
+      allowNull: true,
+    },
+    rtl: {
+      type: DataTypes.TINYINT,
+      allowNull: true,
+    },
+    two_fa_verify_via: {
+      type: DataTypes.ENUM("email", "google_authenticator", "both"),
+      allowNull: true,
+    },
+    two_factor_code: {
+      type: DataTypes.STRING(191),
+      comment: "when authenticator is email",
+    },
+    two_factor_expires_at: {
+      type: DataTypes.DATE,
+    },
+    admin_approval: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 1,
+    },
+    permission_sync: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 1,
+    },
+    google_calendar_status: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 1,
+    },
+    remember_token: {
+      type: DataTypes.STRING(100),
+    },
+    customised_permissions: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    stripe_id: {
+      type: DataTypes.STRING(191),
+    },
+    pm_type: {
+      type: DataTypes.STRING(191),
+    },
+    pm_last_four: {
+      type: DataTypes.STRING(4),
+    },
+    trial_ends_at: {
+      type: DataTypes.DATE,
+    },
+    mac_id: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    mac_login: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+      defaultValue: "disable",
+    },
+    created_at: {
+      type: DataTypes.DATE,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+    },
+    role: {
+      type: DataTypes.ENUM(
+        "owner",
+        "unit_head",
+        "sales_coordinator",
+        "team_lead",
+        "agent",
+        "process_head",
+      ),
+      allowNull: false,
+      defaultValue: "agent",
+    },
+    role_id: {
+      type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
+      defaultValue: 5,
+    },
+    created_at: {
+      type: DataTypes.DATE,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+    },
+    manager_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+    },
+  },
+  {
+    tableName: "users",
+    underscored: true,
+    timestamps: true,
+  },
 );
 
 User.associate = function (models) {
-	// User.belongsTo(models.Company, {
-	// 	foreignKey: "company_id",
-	// 	onDelete: "CASCADE",
-	// 	onUpdate: "CASCADE",
-	// });
+  // User.belongsTo(models.Company, {
+  // 	foreignKey: "company_id",
+  // 	onDelete: "CASCADE",
+  // 	onUpdate: "CASCADE",
+  // });
 
-	User.hasMany(models.Call, { as: "calls", foreignKey: "agent_id" });
+  User.hasMany(models.Call, { as: "calls", foreignKey: "agent_id" });
 
-	User.hasMany(models.UserPermission, {
-		foreignKey: "user_id",
-	});
+  User.hasMany(models.UserPermission, {
+    foreignKey: "user_id",
+  });
 };
 
 module.exports = User;
 
+// User.sync({ alter: true })
+//   .then(() => {
+//     console.log("Users table synced");
+//   })
+//   .catch((err) => {
+//     console.error("Error syncing users table:", err);
+//   });
 // ALTER TABLE test.`users` ADD COLUMN `role_id` TINYINT UNSIGNED NOT NULL DEFAULT 5, ADD COLUMN `role` ENUM('owner', 'unit_head', 'sales_coordinator', 'team_lead', 'agent') NOT NULL DEFAULT 'agent'	0 row(s) affected Records: 0  Duplicates: 0  Warnings: 0	0.366 sec
 
 // const int owner = 1;
