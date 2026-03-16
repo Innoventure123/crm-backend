@@ -1,9 +1,11 @@
 var express = require("express");
 const {
 	getAll,
+	getById,
 	login,
 	getAllAgentsListing,
 	getAllUsers,
+	getTeamLeaders,
 	createUser,
 	updateUser,
 	activateUser,
@@ -20,6 +22,7 @@ router.get("/", function (req, res, next) {
 	res.send("respond with a resource");
 });
 router.get("/getAll", getAll);
+router.get("/getById/:id", verifyToken, getById);
 
 router.post("/login", login);
 
@@ -27,6 +30,7 @@ router.get("/getAllAgentsListing", verifyToken, getAllAgentsListing);
 
 // Admin user management
 router.get("/getAllUsers", verifyToken, getAllUsers);
+router.get("/getTeamLeaders", verifyToken, getTeamLeaders);
 router.post("/createUser", verifyToken, validateBody(schema.createUserSchema), createUser);
 router.put(
 	"/updateUser/:id",

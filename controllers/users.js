@@ -41,6 +41,42 @@ exports.getAll = async (req, res) => {
 	res.json(users);
 };
 
+exports.getById = async (req, res) => {
+	try {
+		if (!ensureAdmin(req, res)) return;
+
+		const { id } = req.params;
+
+		if (!id) {
+			return res
+				.status(400)
+				.json({ success: false, message: "User ID is required" });
+		}
+
+		const user = await Users.findByPk(id, {
+			attributes: { exclude: ["password"] },
+		});
+
+		if (!user) {
+			return res
+				.status(404)
+				.json({ success: false, message: "User not found" });
+		}
+
+		return res.status(200).json({
+			success: true,
+			message: "User fetched",
+			data: user,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			success: false,
+			message: "Internal Server Error",
+			error: error.message,
+		});
+	}
+};
+
 exports.login = async (req, res) => {
 	const { email, password } = req.body;
 
@@ -228,6 +264,55 @@ exports.getAllUsers = async (req, res) => {
 		return res.status(200).json({
 			success: true,
 			message: "Users fetched",
+			data: rows,
+			meta: {
+				totalItems: count,
+				currentPage: page,
+				totalPages: Math.ceil(count / limit),
+			},
+		});
+	} catch (error) {
+		return res.status(500).json({
+			success: false,
+			message: "Internal Server Error",
+			error: error.message,
+		});
+	}
+};
+
+exports.getTeamLeaders = async (req, res) => {
+	try {
+		if (!ensureAdmin(req, res)) return;
+
+		let page = parseInt(req.query.page) || 1;
+		let limit = parseInt(req.query.limit) || 10;
+		let offset = (page - 1) * limit;
+
+		const { search, status, manager_id } = req.query;
+
+		const where = { role: "team_lead" };
+		if (status) where.status = status;
+		if (manager_id) where.manager_id = manager_id;
+
+		if (search) {
+			where[Op.or] = [
+				{ name: { [Op.like]: `%${search}%` } },
+				{ email: { [Op.like]: `%${search}%` } },
+				{ mobile: { [Op.like]: `%${search}%` } },
+			];
+		}
+
+		const { count, rows } = await Users.findAndCountAll({
+			where,
+			limit,
+			offset,
+			order: [["created_at", "DESC"]],
+			attributes: { exclude: ["password"] },
+		});
+
+		return res.status(200).json({
+			success: true,
+			message: "Team leaders fetched",
 			data: rows,
 			meta: {
 				totalItems: count,
