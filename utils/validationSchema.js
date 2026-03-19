@@ -79,8 +79,8 @@ exports.schema = {
 		manager_id: Joi.number().integer().allow(null).optional(),
 		status: Joi.string().valid("active", "deactive").optional(),
 		login: Joi.string().valid("enable", "disable").optional(),
-		mac_id: Joi.string().min(1).required(),
-		mac_login: Joi.string().valid("enable", "disable").optional(),
+		// mac_id: Joi.string().min(1).required(),
+		// mac_login: Joi.string().valid("enable", "disable").optional(),
 	}),
 
 	updateUserSchema: Joi.object({
@@ -103,8 +103,8 @@ exports.schema = {
 		manager_id: Joi.number().integer().allow(null).optional(),
 		status: Joi.string().valid("active", "deactive").optional(),
 		login: Joi.string().valid("enable", "disable").optional(),
-		mac_id: Joi.string().min(1).optional(),
-		mac_login: Joi.string().valid("enable", "disable").optional(),
+		// mac_id: Joi.string().min(1).optional(),
+		// mac_login: Joi.string().valid("enable", "disable").optional(),
 	}).min(1),
 
 	updateUserStatusSchema: Joi.object({
