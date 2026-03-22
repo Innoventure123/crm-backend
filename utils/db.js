@@ -1,13 +1,16 @@
 const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize(
-	process.env.DB,
-	process.env.DB_USER,
-	process.env.PASS,
-	{
-		host: process.env.HOST,
-		dialect: process.env.DIALECT,
-	}
+  process.env.DB,
+  process.env.DB_USER,
+  process.env.PASS,
+  {
+    host: process.env.HOST,
+    dialect: process.env.DIALECT,
+    dialectOptions: {
+      connectTimeout: 60000, // 60 seconds
+    },
+  },
 );
 
 sequelize
