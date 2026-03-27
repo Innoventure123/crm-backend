@@ -346,14 +346,18 @@ exports.getCreditQueues = async (req, res) => {
         { "$agent.name$": { [Op.like]: `%${search}%` } },
         { "$agent.mobile$": { [Op.like]: `%${search}%` } },
 
-        { "$creator.name$": { [Op.like]: `%${search}%` } },
-        { "$creator.mobile$": { [Op.like]: `%${search}%` } },
+        // { "$creator.name$": { [Op.like]: `%${search}%` } },
+        // { "$creator.mobile$": { [Op.like]: `%${search}%` } },
 
-        { "$editor.name$": { [Op.like]: `%${search}%` } },
-        { "$editor.mobile$": { [Op.like]: `%${search}%` } },
+        // { "$editor.name$": { [Op.like]: `%${search}%` } },
+        // { "$editor.mobile$": { [Op.like]: `%${search}%` } },
 
-        { "$converter.name$": { [Op.like]: `%${search}%` } },
-        { "$assigner.name$": { [Op.like]: `%${search}%` } },
+        // { "$converter.name$": { [Op.like]: `%${search}%` } },
+        // { "$assigner.name$": { [Op.like]: `%${search}%` } },
+
+        { client_name: { [Op.like]: `%${search}%` } },
+        { mobile: { [Op.like]: `%${search}%` } },
+        { cell: { [Op.like]: `%${search}%` } },
       ];
     }
 
