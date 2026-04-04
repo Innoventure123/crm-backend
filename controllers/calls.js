@@ -111,7 +111,7 @@ exports.getAllCallListing = async (req, res) => {
       const agentIds = findMyAgents.map((agent) => agent.id);
       params.agent_id = { [Op.in]: agentIds };
     } else if (findMyProfile.role == "agent") {
-      // params.agent_id = user_id;
+      params.agent_id = user_id;
     } else if (findMyProfile.role == "sales_coordinator") {
       params.status = "Interested";
     }
